@@ -1,0 +1,84 @@
+﻿@page "/bloglist"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using PSC.Blazor.Components.Icons
+
+<p>
+    Show:
+    <label class="dynamic-column"><input type="checkbox" @bind="showName" /> Name</label>
+    <label class="dynamic-column"><input type="checkbox" @bind="showAuthor" /> Author</label>
+   
+</p>
+<div class="page-size-chooser">
+    Items per page:
+    <select @bind="@pagination.ItemsPerPage">
+        <option>5</option>
+        <option>10</option>
+        <option>20</option>
+        <option>50</option>
+    </select>
+</div>
+
+<div>
+    <QuickGrid Items="@blogs" Pagination="@pagination">
+
+        <TemplateColumn Title="Image">
+            <div class="image-container flex items-center">
+                <img class="card-image" src="https://kartik786-git.github.io/TestStaticPage/Courses/dotnet%20maui.PNG" />
+            </div>
+        </TemplateColumn>
+        @if (showName)
+        {
+            <TemplateColumn Title
+            ="Name" >
+                <div class="flex items-center">
+                <nobr>
+                    <strong>@context.Name</strong>
+                </nobr>
+            </div>
+        </TemplateColumn>
+        }
+        @if(showAuthor)
+        {
+            <PropertyColumn Property="@(c => c.author)" Sortable="true" Align="Align.Right" />
+        }
+        <TemplateColumn Title="Actions">
+@*             <button class="btn btn-primary m-1" @onclick="@(() => Edit(context))"> Edit</button>
+            <button class="btn btn-danger m-1" @onclick="@(() => Delete(context))">Delete</button> *@
+            <button class="m-1"  @onclick="@(() => Edit(context))"> 
+                 <SVGIcon class="icon" Elements="@SVGIcons.Edit" Size="30" Color="Blue" />
+            </button>
+            <button class="m-1" @onclick="@(() => Delete(context))">
+                <SVGIcon class="icon" Elements="@SVGIcons.Trash" Size="30" Color="Red" />
+            </button>
+        </TemplateColumn>
+    </QuickGrid>
+</div>
+<Paginator State="@pagination" />
+<p><strong>@message</strong></p>
+@code {
+    bool showName = true;
+    bool showAuthor = true;
+    PaginationState pagination = new PaginationState { ItemsPerPage = 5 };
+    string message = string.Empty;
+    record Blog(int Id, string Name, string author );
+
+    IQueryable<Blog> blogs = new[]
+    {
+        new Blog(1, "C#", "kartik"),
+        new Blog(2, "Angular", "jhon"),
+        new Blog(3, "Blazor", "amit"),
+        new Blog(4, "Blazor Hybrid", "kartik"),
+        new Blog(5, ".Net Maui", "ramesh"),
+        new Blog(6, ".net core", "kartik"),
+        new Blog(7, "ado.net", "kartik"),
+        new Blog(8, "dapper", "kartik"),
+        new Blog(9, "asp.net", "kartik"),
+        new Blog(10, "sql", "kartik"),
+        new Blog(11, "ef core", "kartik"),
+        new Blog(12, "jquery", "kartik"),
+    }.AsQueryable();
+
+    void Edit(Blog p) => message = $"Edit click but pending";
+
+    void Delete(Blog p) => message = $"delete click but pending";
+}
